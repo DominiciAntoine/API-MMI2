@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+npm-debug.log
+pnpm-debug.log
+package-lock.json
+pnpm-lock.yaml
+
+# Environnement
+.env
+
+# Logs
+logs
+*.log
+
+# Système
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
