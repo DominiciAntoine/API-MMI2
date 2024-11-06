@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    image: node:16
+    container_name: express-app
+    working_dir: /app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: bash -c "sleep 10 && npm install && node app.js"
+    networks:
+      - coco_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.devMMI.rule=Host(`mmi.dev.stg.billycraft.fr`)"
+      - "traefik.http.routers.devMMI.entrypoints=websecure"
+      - "traefik.http.routers.devMMI.tls.certresolver=coco"
+      - "traefik.http.services.devMMI.loadbalancer.server.port=3000"
+
+  db:
+    image: mariadb:latest
+    container_name: mariadb
+    env_file:
+      - .env
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - coco_net
+
+volumes:
+  db_data:
+
+networks:
+  coco_net:
+    external: true
+
